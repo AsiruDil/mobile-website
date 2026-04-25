@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import LiveCamera from './pages/LiveCamera';
 
 // Layouts & Pages
 import AdminLayout from './layouts/AdminLayout';
@@ -27,6 +28,7 @@ function App() {
             <Route path="users" element={<ManageUsers />} />
             <Route path="news" element={<div className="p-4">News Module (Coming Soon)</div>} />
             <Route path="articles" element={<div className="p-4">Articles Module (Coming Soon)</div>} />
+            <Route path="camera" element={<LiveCamera />} />
           </Route>
           
         </Route>

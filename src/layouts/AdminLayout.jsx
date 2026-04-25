@@ -1,7 +1,10 @@
 import React from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { Users, Newspaper, FileText, LogOut, Shield } from 'lucide-react';
+//import { Users, Newspaper, FileText, LogOut, Shield } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
+
+import { Users, Newspaper, FileText, LogOut, Shield, Camera } from 'lucide-react'; 
+import WebElephantAlert from '../components/WebElephantAlert';
 
 const AdminLayout = () => {
   const navigate = useNavigate();
@@ -16,13 +19,14 @@ const AdminLayout = () => {
     { name: 'Manage Users', path: '/admin/users', icon: Users },
     { name: 'Manage News (Demo)', path: '/admin/news', icon: Newspaper },
     { name: 'Articles (Demo)', path: '/admin/articles', icon: FileText },
+    { name: 'Live Camera', path: '/admin/camera', icon: Camera },
   ];
 
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Toast Container for Notifications */}
       <Toaster position="top-right" />
-
+      <WebElephantAlert />
       {/* Sidebar */}
       <aside className="w-64 bg-emerald-900 text-emerald-50 flex flex-col">
         <div className="p-6 flex items-center gap-3 border-b border-emerald-800">
