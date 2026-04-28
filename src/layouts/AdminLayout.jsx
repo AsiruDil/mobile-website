@@ -17,8 +17,8 @@ const AdminLayout = () => {
 
   const navItems = [
     { name: 'Manage Users', path: '/admin/users', icon: Users },
-    { name: 'Manage News (Demo)', path: '/admin/news', icon: Newspaper },
-    { name: 'Articles (Demo)', path: '/admin/articles', icon: FileText },
+    { name: 'Manage News ', path: '/admin/news', icon: Newspaper },
+    { name: 'Articles', path: '/admin/articles', icon: FileText },
     { name: 'Live Camera', path: '/admin/camera', icon: Camera },
   ];
 

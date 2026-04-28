@@ -67,7 +67,9 @@ const ManageNews = () => {
       const response = await api.get('/api/admin/news');
       setNewsList(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
-      toast.error('Failed to load news');
+      toast.error('Failed to load news', {
+  position: "top-center"
+});
       console.error(error);
     } finally {
       setLoading(false);
@@ -99,7 +101,9 @@ const ManageNews = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.title.trim() || !formData.description.trim()) {
-      toast.error('Please fill in all required fields');
+      toast.error('Please fill in all required fields', {
+  position: "top-center"
+});
       return;
     }
 
@@ -107,11 +111,15 @@ const ManageNews = () => {
       setIsSubmitting(true);
       let imageUrl = editingNews?.imageUrl || null;
 
-      if (imageFile) {
-        toast.loading('Uploading image...', { id: 'img-upload' });
+      if (!imageFile) {
+        toast.error('Uploading error...', { id: 'img-upload' }, {
+ position: "top-center"
+});
         if (editingNews?.imageUrl) await deleteImageFromSupabase(editingNews.imageUrl);
         imageUrl = await uploadImageToSupabase(imageFile);
-        toast.dismiss('img-upload');
+        toast.dismiss('img-upload', {
+  position: "top-center"
+});
       }
 
       if (!imagePreview && !imageFile && editingNews?.imageUrl) {
@@ -123,17 +131,25 @@ const ManageNews = () => {
 
       if (editingNews) {
         await api.put(`/api/admin/news/${editingNews.id}`, payload);
-        toast.success('News updated successfully');
+        toast.success('News updated successfully', {
+  position: "top-center"
+});
       } else {
         await api.post('/api/admin/news', payload);
-        toast.success('News created successfully');
+        toast.success('News created successfully', {
+  position: "top-center"
+});
       }
 
       resetForm();
       fetchNews();
     } catch (error) {
-      toast.dismiss('img-upload');
-      toast.error(error.response?.data?.message || error.message || 'An error occurred');
+      toast.dismiss('img-upload', {
+  position: "top-center"
+});
+      toast.error(error.response?.data?.message || error.message || 'An error occurred', {
+  position: "top-center"
+});
       console.error(error);
     } finally {
       setIsSubmitting(false);
@@ -144,24 +160,32 @@ const ManageNews = () => {
     try {
       await api.delete(`/api/admin/news/${news.id}`);
       await deleteImageFromSupabase(news.imageUrl);
-      toast.success('News deleted successfully');
+      toast.success('News deleted successfully', {
+  position: "top-center"
+});
       setModalConfig({ isOpen: false });
       fetchNews();
     } catch (error) {
-      toast.error('Failed to delete news');
-      console.error(error);
+      toast.error('Failed to delete news', {
+  position: "top-center"
+});
+     
     }
   };
 
   const handleToggleStatus = async (newsId, currentStatus) => {
     try {
       await api.patch(`/api/admin/news/${newsId}/status`, { enabled: !currentStatus });
-      toast.success(`News ${!currentStatus ? 'enabled' : 'disabled'} successfully`);
+      toast.success(`News ${!currentStatus ? 'enabled' : 'disabled'} successfully`, {
+  position: "top-center"
+});
       setModalConfig({ isOpen: false });
       fetchNews();
     } catch (error) {
-      toast.error('Failed to update news status');
-      console.error(error);
+      toast.error('Failed to update news status', {
+  position: "top-center"
+});
+    
     }
   };
 

@@ -16,7 +16,7 @@ function App() {
   return (
     <BrowserRouter>
       {/* Global Toaster for popups everywhere */}
-      <Toaster position="top-right" />
+      
       
       <Routes>
         {/* Public Route */}
