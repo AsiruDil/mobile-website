@@ -7,10 +7,8 @@ import AdminLayout from './layouts/AdminLayout';
 import ManageUsers from './pages/ManageUsers';
 import Login from './pages/Login';
 import ManageNews from './pages/ManageNews';
-
-
-// 1. Import your new ProtectedRoute
 import ProtectedRoute from './components/ProtectedRoute';
+import Articles from './pages/Articles';
 
 function App() {
   return (
@@ -29,6 +27,7 @@ function App() {
             <Route index element={<Navigate to="/admin/users" replace />} />
             <Route path="users" element={<ManageUsers />} />
             <Route path="news" element={<ManageNews />} />
+            <Route path="articles" element={<Articles />} />
             <Route path="articles" element={<div className="p-4">Articles Module (Coming Soon)</div>} />
             <Route path="camera" element={<LiveCamera />} />
           </Route>
