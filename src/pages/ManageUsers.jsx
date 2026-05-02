@@ -19,7 +19,9 @@ const ManageUsers = () => {
       const response = await api.get('/api/admin/users');
       setUsers(response.data);
     } catch (error) {
-      toast.error("Failed to load users");
+      toast.error("Failed to load users", {
+  position: "top-center"
+} );
     } finally {
       setLoading(false);
     }
@@ -34,10 +36,14 @@ const ManageUsers = () => {
     try {
       const newStatus = !currentStatus;
       await api.put(`/api/admin/users/${username}/block?status=${newStatus}`);
-      toast.success(`User successfully ${newStatus ? 'blocked' : 'unblocked'}`);
+      toast.success(`User successfully ${newStatus ? 'blocked' : 'unblocked'}`, {
+  position: "top-center"
+});
       fetchUsers(); // Refresh list
     } catch (error) {
-      toast.error(error.response?.data || "Failed to update user status");
+      toast.error(error.response?.data || "Failed to update user status", {
+  position: "top-center"
+});
     } finally {
       setModalConfig({ isOpen: false });
     }
@@ -47,10 +53,14 @@ const ManageUsers = () => {
   const changeRole = async (username, newRole) => {
     try {
       await api.put(`/api/admin/users/${username}/role?newRole=${newRole}`);
-      toast.success(`Role updated to ${newRole}`);
+      toast.success(`Role updated to ${newRole}`, {
+  position: "top-center"
+});
       fetchUsers(); // Refresh list
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to change role");
+      toast.error(error.response?.data?.message || "Failed to change role", {
+  position: "top-center"
+});
     } finally {
       setModalConfig({ isOpen: false });
     }

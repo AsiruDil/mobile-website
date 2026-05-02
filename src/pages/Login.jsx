@@ -21,7 +21,9 @@ const Login = () => {
       });
 
       localStorage.setItem('token', response.data.token);
-      toast.success('Welcome back!');
+      toast.success('Welcome back!', {
+  position: "top-center"
+});
       navigate('/admin/users');
       
     } catch (error) {
@@ -29,7 +31,9 @@ const Login = () => {
         ? error.response.data 
         : 'Invalid credentials or account blocked';
         
-      toast.error(errorMessage);
+      toast.error(errorMessage, {
+  position: "top-center"
+});
     } finally {
       setIsLoading(false);
     }

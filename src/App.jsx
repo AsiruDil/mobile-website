@@ -1,5 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import LiveCamera from './pages/LiveCamera';
+
+// Layouts & Pages
 import AdminLayout from './layouts/AdminLayout';
 import ManageUsers from './pages/ManageUsers';
 import Login from './pages/Login';
@@ -11,7 +14,7 @@ function App() {
   return (
     <BrowserRouter>
       {/* Global Toaster for popups everywhere */}
-      <Toaster position="top-right" />
+      
       
       <Routes>
         {/* Public Route */}
@@ -25,6 +28,8 @@ function App() {
             <Route path="users" element={<ManageUsers />} />
             <Route path="news" element={<ManageNews />} />
             <Route path="articles" element={<Articles />} />
+            <Route path="articles" element={<div className="p-4">Articles Module (Coming Soon)</div>} />
+            <Route path="camera" element={<LiveCamera />} />
           </Route>
           
         </Route>
