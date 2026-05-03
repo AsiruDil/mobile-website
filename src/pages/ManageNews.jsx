@@ -4,8 +4,8 @@ import toast from 'react-hot-toast';
 import api from '../api';
 import ConfirmModal from '../components/ConfirmModal';
 
-const SUPABASE_URL = 'https://ucveknbkcmrqreyseymb.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjdmVrbmJrY21ycXJleXNleW1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NTQ1OTMsImV4cCI6MjA5MjUzMDU5M30.zLYHwH5a0aKilGPs3sNqwymQ-VWJ1y8fKuFMIr8SJJE';
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_KEY;
 const BUCKET_NAME = 'report_incident_images';
 
 const uploadImageToSupabase = async (file) => {

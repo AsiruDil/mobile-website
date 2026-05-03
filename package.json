@@ -13,10 +13,12 @@
     "@stomp/stompjs": "^7.3.0",
     "@tailwindcss/vite": "^4.2.4",
     "axios": "^1.15.2",
-    "lucide-react": "^1.8.0",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^1.14.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-hot-toast": "^2.6.0",
+    "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.14.2",
     "sockjs-client": "^1.6.1",
     "tailwindcss": "^4.2.4"

@@ -3,7 +3,7 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 //import { Users, Newspaper, FileText, LogOut, Shield } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 
-import { Users, Newspaper, FileText, LogOut, Shield, Camera } from 'lucide-react'; 
+import { Users, Newspaper, FileText, LogOut, Shield, Camera,Map } from 'lucide-react'; 
 import WebElephantAlert from '../components/WebElephantAlert';
 
 const AdminLayout = () => {
@@ -20,6 +20,7 @@ const AdminLayout = () => {
     { name: 'Manage News ', path: '/admin/news', icon: Newspaper },
     { name: 'Articles', path: '/admin/articles', icon: FileText },
     { name: 'Live Camera', path: '/admin/camera', icon: Camera },
+    { name: 'Live Map', path: '/admin/map', icon: Map },
   ];
 
   return (
