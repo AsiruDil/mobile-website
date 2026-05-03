@@ -67,9 +67,7 @@ const ManageNews = () => {
       const response = await api.get('/api/admin/news');
       setNewsList(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
-      toast.error('Failed to load news', {
-  position: "top-center"
-});
+      toast.error('Failed to load news', { position: "top-center" });
       console.error(error);
     } finally {
       setLoading(false);
@@ -101,9 +99,7 @@ const ManageNews = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.title.trim() || !formData.description.trim()) {
-      toast.error('Please fill in all required fields', {
-  position: "top-center"
-});
+      toast.error('Please fill in all required fields', { position: "top-center" });
       return;
     }
 
@@ -111,17 +107,20 @@ const ManageNews = () => {
       setIsSubmitting(true);
       let imageUrl = editingNews?.imageUrl || null;
 
-      if (!imageFile) {
-        toast.error('Uploading error...', { id: 'img-upload' }, {
- position: "top-center"
-});
-        if (editingNews?.imageUrl) await deleteImageFromSupabase(editingNews.imageUrl);
+      // පින්තූරයක් තෝරා තිබේ නම් පමණක් Upload කරන්න (Logic Fixed)
+      if (imageFile) {
+        toast.loading('Uploading image...', { id: 'img-upload', position: "top-center" });
+        
+        // පරණ පින්තූරය මකා දැමීම
+        if (editingNews?.imageUrl) {
+          await deleteImageFromSupabase(editingNews.imageUrl);
+        }
+        
         imageUrl = await uploadImageToSupabase(imageFile);
-        toast.dismiss('img-upload', {
-  position: "top-center"
-});
+        toast.dismiss('img-upload');
       }
 
+      // පින්තූරය ඉවත් කර ඇත්නම් URL එක null කිරීම
       if (!imagePreview && !imageFile && editingNews?.imageUrl) {
         await deleteImageFromSupabase(editingNews.imageUrl);
         imageUrl = null;
@@ -131,25 +130,17 @@ const ManageNews = () => {
 
       if (editingNews) {
         await api.put(`/api/admin/news/${editingNews.id}`, payload);
-        toast.success('News updated successfully', {
-  position: "top-center"
-});
+        toast.success('News updated successfully', { position: "top-center" });
       } else {
         await api.post('/api/admin/news', payload);
-        toast.success('News created successfully', {
-  position: "top-center"
-});
+        toast.success('News created successfully', { position: "top-center" });
       }
 
       resetForm();
       fetchNews();
     } catch (error) {
-      toast.dismiss('img-upload', {
-  position: "top-center"
-});
-      toast.error(error.response?.data?.message || error.message || 'An error occurred', {
-  position: "top-center"
-});
+      toast.dismiss('img-upload');
+      toast.error(error.response?.data?.message || error.message || 'An error occurred', { position: "top-center" });
       console.error(error);
     } finally {
       setIsSubmitting(false);
@@ -159,33 +150,23 @@ const ManageNews = () => {
   const handleDelete = async (news) => {
     try {
       await api.delete(`/api/admin/news/${news.id}`);
-      await deleteImageFromSupabase(news.imageUrl);
-      toast.success('News deleted successfully', {
-  position: "top-center"
-});
+      if (news.imageUrl) await deleteImageFromSupabase(news.imageUrl);
+      toast.success('News deleted successfully', { position: "top-center" });
       setModalConfig({ isOpen: false });
       fetchNews();
     } catch (error) {
-      toast.error('Failed to delete news', {
-  position: "top-center"
-});
-     
+      toast.error('Failed to delete news', { position: "top-center" });
     }
   };
 
   const handleToggleStatus = async (newsId, currentStatus) => {
     try {
       await api.patch(`/api/admin/news/${newsId}/status`, { enabled: !currentStatus });
-      toast.success(`News ${!currentStatus ? 'enabled' : 'disabled'} successfully`, {
-  position: "top-center"
-});
+      toast.success(`News ${!currentStatus ? 'enabled' : 'disabled'} successfully`, { position: "top-center" });
       setModalConfig({ isOpen: false });
       fetchNews();
     } catch (error) {
-      toast.error('Failed to update news status', {
-  position: "top-center"
-});
-    
+      toast.error('Failed to update news status', { position: "top-center" });
     }
   };
 
@@ -211,7 +192,7 @@ const ManageNews = () => {
   );
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-6xl mx-auto p-4">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-gray-800">Manage News</h1>
         <button
@@ -229,7 +210,7 @@ const ManageNews = () => {
           placeholder="Search title or description..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
         />
         <Search className="w-5 h-5 text-gray-400 absolute left-3 top-2.5" />
       </div>
@@ -253,8 +234,7 @@ const ManageNews = () => {
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
-                placeholder="Enter news title"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none"
                 required
               />
             </div>
@@ -265,9 +245,8 @@ const ManageNews = () => {
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
-                placeholder="Enter detailed description"
                 rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-none"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none resize-none"
                 required
               />
             </div>
@@ -276,23 +255,18 @@ const ManageNews = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">News Image</label>
               <div className="flex gap-4 items-start">
                 <div className="flex-1">
-                  <label className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-emerald-500 transition-colors">
+                  <label className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-emerald-500">
                     <Upload className="w-4 h-4 text-gray-500" />
                     <span className="text-sm text-gray-600">
                       {imageFile ? imageFile.name : 'Click to upload image'}
                     </span>
                     <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                   </label>
-                  <p className="text-xs text-gray-400 mt-1">PNG, JPG, WEBP up to 10MB</p>
                 </div>
                 {imagePreview && (
-                  <div className="w-24 h-24 relative flex-shrink-0">
-                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover rounded-lg border border-gray-200" />
-                    <button
-                      type="button"
-                      onClick={handleRemoveImage}
-                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                    >
+                  <div className="w-24 h-24 relative">
+                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover rounded-lg border" />
+                    <button type="button" onClick={handleRemoveImage} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1">
                       <X className="w-3 h-3" />
                     </button>
                   </div>
@@ -301,20 +275,8 @@ const ManageNews = () => {
             </div>
 
             <div className="flex gap-3 justify-end pt-4">
-              <button type="button" onClick={resetForm} className="px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg">
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg disabled:opacity-50 flex items-center gap-2"
-              >
-                {isSubmitting && (
-                  <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                  </svg>
-                )}
+              <button type="button" onClick={resetForm} className="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg">Cancel</button>
+              <button type="submit" disabled={isSubmitting} className="px-4 py-2 bg-emerald-600 text-white rounded-lg disabled:opacity-50">
                 {isSubmitting ? 'Saving...' : editingNews ? 'Update News' : 'Post News'}
               </button>
             </div>
@@ -322,88 +284,39 @@ const ManageNews = () => {
         </div>
       )}
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <table className="w-full text-left border-collapse">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
+        <table className="w-full text-left">
           <thead>
-            <tr className="bg-gray-50 border-b border-gray-100">
+            <tr className="bg-gray-50 border-b">
               <th className="p-4 font-semibold text-gray-600">Title</th>
               <th className="p-4 font-semibold text-gray-600">Description</th>
               <th className="p-4 font-semibold text-gray-600">Status</th>
-              <th className="p-4 font-semibold text-gray-600">Created</th>
               <th className="p-4 font-semibold text-gray-600 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan="5" className="p-8 text-center text-gray-500">Loading news...</td></tr>
-            ) : filteredNews.length === 0 ? (
-              <tr><td colSpan="5" className="p-8 text-center text-gray-500">
-                {newsList.length === 0 ? 'No news posted yet.' : 'No news matching your search.'}
-              </td></tr>
-            ) : (
-              filteredNews.map((news) => (
-                <tr key={news.id} className="border-b border-gray-50 hover:bg-gray-50/50">
-                  <td className="p-4 font-medium text-gray-800">
-                    <div className="flex items-center gap-3">
-                      {news.imageUrl ? (
-                        <img src={news.imageUrl} alt={news.title} className="w-10 h-10 object-cover rounded flex-shrink-0" />
-                      ) : (
-                        <div className="w-10 h-10 bg-gray-100 rounded flex items-center justify-center flex-shrink-0">
-                          <Upload className="w-4 h-4 text-gray-400" />
-                        </div>
-                      )}
-                      <span className="truncate max-w-xs">{news.title}</span>
-                    </div>
-                  </td>
-                  <td className="p-4 text-gray-600 max-w-xs">
-                    <p className="truncate">{news.description}</p>
-                  </td>
-                  <td className="p-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium flex items-center w-max gap-1 ${
-                      news.enabled ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-700'
-                    }`}>
-                      {news.enabled ? <><Eye className="w-3 h-3" />Enabled</> : <><EyeOff className="w-3 h-3" />Disabled</>}
-                    </span>
-                  </td>
-                  <td className="p-4 text-gray-600 text-sm">
-                    {news.createdAt ? new Date(news.createdAt).toLocaleDateString() : '—'}
-                  </td>
-                  <td className="p-4 flex justify-end gap-2">
-                    <button onClick={() => handleEdit(news)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg" title="Edit">
-                      <Edit2 className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={() => setModalConfig({
-                        isOpen: true,
-                        title: news.enabled ? 'Disable News' : 'Enable News',
-                        message: `Are you sure you want to ${news.enabled ? 'disable' : 'enable'} this news?`,
-                        confirmText: news.enabled ? 'Disable' : 'Enable',
-                        isDanger: news.enabled,
-                        onConfirm: () => handleToggleStatus(news.id, news.enabled),
-                      })}
-                      className={`p-2 rounded-lg ${news.enabled ? 'text-emerald-600 hover:bg-emerald-50' : 'text-gray-400 hover:text-emerald-600 hover:bg-emerald-50'}`}
-                      title={news.enabled ? 'Disable' : 'Enable'}
-                    >
-                      {news.enabled ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
-                    </button>
-                    <button
-                      onClick={() => setModalConfig({
-                        isOpen: true,
-                        title: 'Delete News',
-                        message: `Are you sure you want to permanently delete "${news.title}"?`,
-                        confirmText: 'Delete',
-                        isDanger: true,
-                        onConfirm: () => handleDelete(news),
-                      })}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
-                      title="Delete"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
+              <tr><td colSpan="4" className="p-8 text-center text-gray-500">Loading...</td></tr>
+            ) : filteredNews.map((news) => (
+              <tr key={news.id} className="border-b hover:bg-gray-50/50">
+                <td className="p-4">
+                  <div className="flex items-center gap-3">
+                    {news.imageUrl ? <img src={news.imageUrl} className="w-10 h-10 object-cover rounded" /> : <div className="w-10 h-10 bg-gray-100 rounded flex items-center justify-center"><Upload className="w-4 h-4 text-gray-400" /></div>}
+                    <span className="truncate max-w-[200px]">{news.title}</span>
+                  </div>
+                </td>
+                <td className="p-4 max-w-xs truncate text-gray-600">{news.description}</td>
+                <td className="p-4">
+                  <span className={`px-3 py-1 rounded-full text-xs ${news.enabled ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-700'}`}>
+                    {news.enabled ? 'Enabled' : 'Disabled'}
+                  </span>
+                </td>
+                <td className="p-4 flex justify-end gap-2">
+                  <button onClick={() => handleEdit(news)} className="p-2 text-blue-600"><Edit2 className="w-5 h-5" /></button>
+                  <button onClick={() => handleDelete(news)} className="p-2 text-red-600"><Trash2 className="w-5 h-5" /></button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
