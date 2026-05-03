@@ -11,17 +11,17 @@ const WebElephantAlert = () => {
     audioRef.current.loop = true;
 
     const stompClient = new Client({
-      webSocketFactory: () => new SockJS('http://localhost:8080/ws-elephant'),
-      onConnect: () => {
-        console.log('Connected to Elephant Alert System');
-        stompClient.subscribe('/topic/alerts', (message) => {
-          const data = JSON.parse(message.body);
-          setAlertData(data);
-          audioRef.current.play().catch(e => console.log("Audio blocked by browser:", e));
-        });
-      },
-      onStompError: (frame) => console.error('Broker error: ' + frame.headers['message']),
+  webSocketFactory: () => new SockJS('https://elephant-guard.onrender.com/ws-elephant'),
+  onConnect: () => {
+    console.log('Connected to Elephant Alert System');
+    stompClient.subscribe('/topic/alerts', (message) => {
+      const data = JSON.parse(message.body);
+      setAlertData(data);
+      audioRef.current.play().catch(e => console.log("Audio blocked by browser:", e));
     });
+  },
+  onStompError: (frame) => console.error('Broker error: ' + frame.headers['message']),
+});
 
     stompClient.activate();
 
