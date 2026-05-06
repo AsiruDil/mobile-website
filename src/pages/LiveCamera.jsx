@@ -1,9 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Camera } from 'lucide-react';
 
 const LiveCamera = () => {
-  // Your active ngrok URL goes here
-  const VIDEO_FEED_URL = "https://grueling-absinthe-chief.ngrok-free.dev/video_feed";
+  const [videoUrl, setVideoUrl] = useState('');
+  const [tunnelUrl, setTunnelUrl] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTunnelUrl = async () => {
+      try {
+        const r = await fetch('https://elephant-guard.onrender.com/api/tunnel/current');
+        const data = await r.json();
+        if (data.url) {
+          setTunnelUrl(data.url);
+          setVideoUrl(`${data.url}/video_feed`);
+        }
+      } catch (e) {
+        console.log('Failed to get tunnel URL:', e);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTunnelUrl();
+    const interval = setInterval(fetchTunnelUrl, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -14,40 +36,48 @@ const LiveCamera = () => {
 
       <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
         <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden flex items-center justify-center">
-          <img 
-            src={VIDEO_FEED_URL} 
-            alt="Live Camera Feed" 
-            className="w-full h-full object-contain"
-            onError={(e) => {
-              e.target.style.display = 'none';
-              const errorDiv = document.getElementById('cam-error');
-              if (errorDiv) errorDiv.style.display = 'block';
-            }}
-          />
+          {loading ? (
+            <p className="text-white">Loading camera feed...</p>
+          ) : videoUrl ? (
+            <img
+              src={videoUrl}
+              alt="Live Camera Feed"
+              className="w-full h-full object-contain"
+              onError={(e) => {
+                e.target.style.display = 'none';
+                const errorDiv = document.getElementById('cam-error');
+                if (errorDiv) errorDiv.style.display = 'block';
+              }}
+            />
+          ) : (
+            <p className="text-white">Camera feed offline.</p>
+          )}
           <div id="cam-error" className="absolute text-white text-center hidden">
             <p className="text-lg font-semibold">Camera feed offline.</p>
             <p className="text-sm text-gray-400">
-              1. Make sure elephant_stream.py is running.<br />
-              2. Check if ngrok is active in your terminal.<br />
-              3. Open the ngrok link in a new tab and click "Visit Site".
+              1. Make sure elephant.py is running.<br />
+              2. Check if localtunnel is active.<br />
             </p>
           </div>
         </div>
       </div>
-      <div className="mt-4 p-4 bg-blue-50 border border-blue-100 rounded-lg">
-        <p className="text-sm text-blue-700">
-          <strong>Note:</strong> If the camera feed is not visible, first open{' '}
-          <a 
-            href="https://grueling-absinthe-chief.ngrok-free.dev" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="underline font-bold"
-          >
-            this link
-          </a>{' '}
-          in a new tab and click the "Visit Site" button.
-        </p>
-      </div>
+
+      {tunnelUrl && (
+        <div className="mt-4 p-4 bg-blue-50 border border-blue-100 rounded-lg">
+          <p className="text-sm text-blue-700">
+            <strong>Note:</strong> If the camera feed is not visible, first open{' '}
+            <a
+              href={tunnelUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline font-bold"
+            >
+              this link
+            </a>{' '}
+            in a new tab and click the "Visit Site" button.
+          </p>
+        </div>
+      )}
     </div>
   );
 };
